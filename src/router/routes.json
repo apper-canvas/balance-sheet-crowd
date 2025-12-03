@@ -4,90 +4,12 @@
       "when": {
         "conditions": [
           {
-            "label": "User must be authenticated to access dashboard",
-            "rule": "authenticated"
+            "label": "Homepage is public",
+            "rule": "public"
           }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/transactions": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to manage transactions",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/budgets": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to manage budgets",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/goals": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to manage goals",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/accounts": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to manage accounts",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/reports": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to view reports",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  },
-  "/settings": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be authenticated to access settings",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
+        ],
+        "operator": "OR"
+      }
     }
   },
   "/login": {
@@ -98,7 +20,8 @@
             "label": "Login page is public",
             "rule": "public"
           }
-        ]
+        ],
+        "operator": "OR"
       }
     }
   },
@@ -110,7 +33,8 @@
             "label": "Signup page is public",
             "rule": "public"
           }
-        ]
+        ],
+        "operator": "OR"
       }
     }
   },
@@ -119,10 +43,11 @@
       "when": {
         "conditions": [
           {
-            "label": "Callback page is public for authentication flow",
+            "label": "Callback page is public",
             "rule": "public"
           }
-        ]
+        ],
+        "operator": "OR"
       }
     }
   },
@@ -134,10 +59,147 @@
             "label": "Error page is public",
             "rule": "public"
           }
+        ],
+        "operator": "OR"
+      }
+    }
+  },
+  "/dashboard": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view dashboard",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/transactions": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view transactions",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/budgets": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view budgets",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/goals": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view goals",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/accounts": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view accounts",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/tasks": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view tasks",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/reports": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view reports",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/settings": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view settings",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login",
+      "excludeRedirectQuery": false
+    }
+  },
+  "/prompt-password/:appId/:emailAddress/:provider": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Password prompt is public",
+            "rule": "public"
+          }
         ]
       }
     }
   },
+  "/reset-password/:appId/:fields": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Password reset is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+},
   "/reset-password/**/*": {
     "allow": {
       "when": {

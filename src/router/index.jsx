@@ -11,6 +11,7 @@ const Budgets = lazy(() => import("@/components/pages/Budgets"));
 const Goals = lazy(() => import("@/components/pages/Goals"));
 const Accounts = lazy(() => import("@/components/pages/Accounts"));
 const Reports = lazy(() => import("@/components/pages/Reports"));
+const Tasks = lazy(() => import("@/components/pages/Tasks"));
 const Settings = lazy(() => import("@/components/pages/Settings"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 const Login = lazy(() => import("@/components/pages/Login"));
@@ -84,8 +85,9 @@ export const router = createBrowserRouter([
           createRoute({ path: "transactions", element: <Transactions /> }),
           createRoute({ path: "budgets", element: <Budgets /> }),
           createRoute({ path: "goals", element: <Goals /> }),
-          createRoute({ path: "accounts", element: <Accounts /> }),
+createRoute({ path: "accounts", element: <Accounts /> }),
           createRoute({ path: "reports", element: <Reports /> }),
+          createRoute({ path: "tasks", element: <Tasks /> }),
           createRoute({ path: "settings", element: <Settings /> }),
           createRoute({ path: "*", element: <NotFound /> }),
         ],
