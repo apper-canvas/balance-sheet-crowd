@@ -72,7 +72,7 @@ class TransactionService {
     }
   }
 
-  async create(transactionData) {
+async create(transactionData) {
     try {
       const apperClient = getApperClient();
       if (!apperClient) {
@@ -83,7 +83,7 @@ class TransactionService {
         records: [{
           Name: transactionData.description,
           amount_c: transactionData.amount,
-          category_c: transactionData.category?.Id || transactionData.category,
+          category_c: parseInt(transactionData.category?.Id || transactionData.category),
           date_c: transactionData.date.split('T')[0],
           description_c: transactionData.description,
           type_c: transactionData.type
@@ -118,7 +118,7 @@ class TransactionService {
     }
   }
 
-  async update(id, updateData) {
+async update(id, updateData) {
     try {
       const apperClient = getApperClient();
       if (!apperClient) {
@@ -130,7 +130,7 @@ class TransactionService {
           Id: parseInt(id),
           Name: updateData.description,
           amount_c: updateData.amount,
-          category_c: updateData.category?.Id || updateData.category,
+          category_c: parseInt(updateData.category?.Id || updateData.category),
           date_c: updateData.date.split('T')[0],
           description_c: updateData.description,
           type_c: updateData.type
