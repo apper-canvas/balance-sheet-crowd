@@ -27,13 +27,13 @@ const TransactionForm = ({ transaction, onSave, onCancel }) => {
   }, []);
 
   useEffect(() => {
-    if (transaction) {
+if (transaction) {
       setFormData({
-        type: transaction.type,
-        amount: transaction.amount.toString(),
-        category: transaction.category,
-        date: format(new Date(transaction.date), "yyyy-MM-dd"),
-        description: transaction.description
+        type: transaction.type_c,
+        amount: transaction.amount_c?.toString() || '',
+        category: transaction.category_c?.Name || transaction.category_c,
+        date: format(new Date(transaction.date_c), "yyyy-MM-dd"),
+        description: transaction.description_c || transaction.Name
       });
     }
   }, [transaction]);
@@ -102,7 +102,7 @@ const TransactionForm = ({ transaction, onSave, onCancel }) => {
     }
   };
 
-  const filteredCategories = categories.filter(cat => cat.type === formData.type);
+const filteredCategories = categories.filter(cat => cat.type_c === formData.type);
 
   return (
     <Card className="p-6">
@@ -143,9 +143,9 @@ const TransactionForm = ({ transaction, onSave, onCancel }) => {
             onChange={(e) => handleInputChange("category", e.target.value)}
           >
             <option value="">Select a category</option>
-            {filteredCategories.map((category) => (
-              <option key={category.Id} value={category.name}>
-                {category.name}
+{filteredCategories.map((category) => (
+              <option key={category.Id} value={category.Name}>
+                {category.Name}
               </option>
             ))}
           </Select>

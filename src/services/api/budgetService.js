@@ -1,58 +1,206 @@
-import budgets from "@/services/mockData/budgets.json";
+import { getApperClient } from "@/services/apperClient";
+import { toast } from "react-toastify";
 
 class BudgetService {
   constructor() {
-    this.data = [...budgets];
+    this.tableName = 'budget_c';
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.data];
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "current_spent_c"}},
+          {"field": {"Name": "month_c"}},
+          {"field": {"Name": "monthly_limit_c"}},
+          {"field": {"Name": "year_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching budgets:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const budget = this.data.find(item => item.Id === parseInt(id));
-    if (!budget) {
-      throw new Error("Budget not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "current_spent_c"}},
+          {"field": {"Name": "month_c"}},
+          {"field": {"Name": "monthly_limit_c"}},
+          {"field": {"Name": "year_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.getRecordById(this.tableName, parseInt(id), params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching budget ${id}:`, error?.response?.data?.message || error);
+      throw error;
     }
-    return { ...budget };
   }
 
   async create(budgetData) {
-    await this.delay();
-    const newId = Math.max(...this.data.map(item => item.Id), 0) + 1;
-    const newBudget = {
-      Id: newId,
-      ...budgetData,
-      currentSpent: 0
-    };
-    this.data.push(newBudget);
-    return { ...newBudget };
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Name: `${budgetData.category} Budget`,
+          category_c: budgetData.category?.Id || budgetData.category,
+          current_spent_c: budgetData.currentSpent || 0,
+          month_c: budgetData.month,
+          monthly_limit_c: budgetData.monthlyLimit,
+          year_c: budgetData.year
+        }]
+      };
+
+      const response = await apperClient.createRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} budgets:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error creating budget:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async update(id, updateData) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Budget not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: `${updateData.category} Budget`,
+          category_c: updateData.category?.Id || updateData.category,
+          current_spent_c: updateData.currentSpent || 0,
+          month_c: updateData.month,
+          monthly_limit_c: updateData.monthlyLimit,
+          year_c: updateData.year
+        }]
+      };
+
+      const response = await apperClient.updateRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} budgets:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error updating budget:", error?.response?.data?.message || error);
+      throw error;
     }
-    this.data[index] = { ...this.data[index], ...updateData };
-    return { ...this.data[index] };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Budget not found");
-    }
-    const deletedBudget = this.data.splice(index, 1)[0];
-    return { ...deletedBudget };
-  }
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
 
-  delay() {
-    return new Promise(resolve => setTimeout(resolve, Math.random() * 300 + 200));
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} budgets:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0;
+      }
+    } catch (error) {
+      console.error("Error deleting budget:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 }
 

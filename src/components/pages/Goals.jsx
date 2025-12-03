@@ -85,7 +85,7 @@ const Goals = () => {
     }
 
     try {
-      const newAmount = contributionGoal.currentAmount + parseFloat(contributionAmount);
+const newAmount = contributionGoal.current_amount_c + parseFloat(contributionAmount);
       await savingsGoalService.update(contributionGoal.Id, {
         ...contributionGoal,
         currentAmount: newAmount
@@ -97,7 +97,7 @@ const Goals = () => {
         amount: parseFloat(contributionAmount),
         category: "Savings",
         date: new Date().toISOString(),
-        description: `Contribution to ${contributionGoal.name}`
+description: `Contribution to ${contributionGoal.Name}`
       });
 
       toast.success("Contribution added successfully");
@@ -114,8 +114,8 @@ const Goals = () => {
   if (error) return <ErrorView message={error} onRetry={loadData} />;
 
   const goalsWithProgress = calculateSavingsProgress(goals, transactions);
-  const totalTargetAmount = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
-  const totalCurrentAmount = goalsWithProgress.reduce((sum, goal) => sum + goal.currentAmount, 0);
+const totalTargetAmount = goals.reduce((sum, goal) => sum + (goal.target_amount_c || 0), 0);
+  const totalCurrentAmount = goalsWithProgress.reduce((sum, goal) => sum + (goal.current_amount_c || 0), 0);
   const completedGoals = goalsWithProgress.filter(g => g.status === "completed").length;
   const overallProgress = totalTargetAmount > 0 ? (totalCurrentAmount / totalTargetAmount) * 100 : 0;
 
@@ -280,10 +280,10 @@ const Goals = () => {
 
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600 mb-2">Contributing to: {contributionGoal.name}</p>
+<p className="text-sm text-gray-500 mb-2">Contributing to: {contributionGoal.Name}</p>
                 <p className="text-sm text-gray-500">
-                  Current: {formatCurrency(contributionGoal.currentAmount)} / 
-                  Target: {formatCurrency(contributionGoal.targetAmount)}
+                  Current: {formatCurrency(contributionGoal.current_amount_c)} / 
+                  Target: {formatCurrency(contributionGoal.target_amount_c)}
                 </p>
               </div>
 

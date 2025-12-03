@@ -1,58 +1,206 @@
-import transactions from "@/services/mockData/transactions.json";
+import { getApperClient } from "@/services/apperClient";
+import { toast } from "react-toastify";
 
 class TransactionService {
   constructor() {
-    this.data = [...transactions];
+    this.tableName = 'transaction_c';
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.data];
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "amount_c"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching transactions:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const transaction = this.data.find(item => item.Id === parseInt(id));
-    if (!transaction) {
-      throw new Error("Transaction not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "amount_c"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.getRecordById(this.tableName, parseInt(id), params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching transaction ${id}:`, error?.response?.data?.message || error);
+      throw error;
     }
-    return { ...transaction };
   }
 
   async create(transactionData) {
-    await this.delay();
-    const newId = Math.max(...this.data.map(item => item.Id), 0) + 1;
-    const newTransaction = {
-      Id: newId,
-      ...transactionData,
-      createdAt: new Date().toISOString()
-    };
-    this.data.push(newTransaction);
-    return { ...newTransaction };
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Name: transactionData.description,
+          amount_c: transactionData.amount,
+          category_c: transactionData.category?.Id || transactionData.category,
+          date_c: transactionData.date.split('T')[0],
+          description_c: transactionData.description,
+          type_c: transactionData.type
+        }]
+      };
+
+      const response = await apperClient.createRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} transactions:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error creating transaction:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async update(id, updateData) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Transaction not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.description,
+          amount_c: updateData.amount,
+          category_c: updateData.category?.Id || updateData.category,
+          date_c: updateData.date.split('T')[0],
+          description_c: updateData.description,
+          type_c: updateData.type
+        }]
+      };
+
+      const response = await apperClient.updateRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} transactions:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error updating transaction:", error?.response?.data?.message || error);
+      throw error;
     }
-    this.data[index] = { ...this.data[index], ...updateData };
-    return { ...this.data[index] };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Transaction not found");
-    }
-    const deletedTransaction = this.data.splice(index, 1)[0];
-    return { ...deletedTransaction };
-  }
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
 
-  delay() {
-    return new Promise(resolve => setTimeout(resolve, Math.random() * 300 + 200));
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} transactions:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0;
+      }
+    } catch (error) {
+      console.error("Error deleting transaction:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 }
 

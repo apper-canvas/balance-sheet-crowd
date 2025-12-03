@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import { useAuth } from "@/layouts/Root";
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useSelector(state => state.user);
+  const { logout } = useAuth();
 
-const navigation = [
+  const navigation = [
     { name: "Dashboard", href: "", icon: "LayoutDashboard" },
     { name: "Transactions", href: "transactions", icon: "Receipt" },
     { name: "Budgets", href: "budgets", icon: "PieChart" },
@@ -18,6 +23,10 @@ const navigation = [
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -71,14 +80,26 @@ const navigation = [
 
           {/* User Section */}
           <div className="flex-shrink-0 p-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gradient-to-r from-primary-50 to-teal-50">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
-                <ApperIcon name="User" size={16} className="text-white" />
+            <div className="flex items-center justify-between space-x-3 p-3 rounded-lg bg-gradient-to-r from-primary-50 to-teal-50">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+                  <ApperIcon name="User" size={16} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user?.firstName || "User"}
+                  </p>
+                  <p className="text-xs text-gray-600">{user?.emailAddress || "Finance Manager"}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">Personal Finance</p>
-                <p className="text-xs text-gray-600">Manage your money</p>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-red-600"
+              >
+                <ApperIcon name="LogOut" size={16} />
+              </Button>
             </div>
           </div>
         </div>
@@ -93,12 +114,22 @@ const navigation = [
             </div>
             <h1 className="text-lg font-bold gradient-text">Balance Sheet</h1>
           </div>
-          <button
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-lg text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
-          >
-            <ApperIcon name={isMobileMenuOpen ? "X" : "Menu"} size={24} />
-          </button>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-gray-600 hover:text-red-600"
+            >
+              <ApperIcon name="LogOut" size={16} />
+            </Button>
+            <button
+              onClick={toggleMobileMenu}
+              className="p-2 rounded-lg text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+            >
+              <ApperIcon name={isMobileMenuOpen ? "X" : "Menu"} size={24} />
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Overlay */}
@@ -155,6 +186,19 @@ const navigation = [
                     </NavLink>
                   ))}
                 </nav>
+                <div className="border-t border-gray-200 p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+                      <ApperIcon name="User" size={16} className="text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        {user?.firstName || "User"}
+                      </p>
+                      <p className="text-xs text-gray-600">{user?.emailAddress || "Finance Manager"}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </>

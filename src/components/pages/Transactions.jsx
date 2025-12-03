@@ -90,26 +90,28 @@ const Transactions = () => {
     });
   };
 
-  const filteredTransactions = transactions.filter(transaction => {
-    const matchesSearch = transaction.description.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         transaction.category.toLowerCase().includes(filters.search.toLowerCase());
-    const matchesCategory = !filters.category || transaction.category === filters.category;
-    const matchesType = !filters.type || transaction.type === filters.type;
-    const matchesDateFrom = !filters.dateFrom || new Date(transaction.date) >= new Date(filters.dateFrom);
-    const matchesDateTo = !filters.dateTo || new Date(transaction.date) <= new Date(filters.dateTo);
+const filteredTransactions = transactions.filter(transaction => {
+    const description = transaction.description_c || transaction.Name || '';
+    const category = transaction.category_c?.Name || '';
+    const matchesSearch = description.toLowerCase().includes(filters.search.toLowerCase()) ||
+                         category.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesCategory = !filters.category || category === filters.category;
+    const matchesType = !filters.type || transaction.type_c === filters.type;
+    const matchesDateFrom = !filters.dateFrom || new Date(transaction.date_c) >= new Date(filters.dateFrom);
+    const matchesDateTo = !filters.dateTo || new Date(transaction.date_c) <= new Date(filters.dateTo);
 
     return matchesSearch && matchesCategory && matchesType && matchesDateFrom && matchesDateTo;
   });
 
-  const sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+const sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date_c) - new Date(a.date_c));
 
   const totalIncome = filteredTransactions
-    .filter(t => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => t.type_c === "income")
+    .reduce((sum, t) => sum + (t.amount_c || 0), 0);
 
   const totalExpenses = filteredTransactions
-    .filter(t => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(t => t.type_c === "expense")
+    .reduce((sum, t) => sum + (t.amount_c || 0), 0);
 
   if (loading) return <Loading message="Loading transactions..." />;
   if (error) return <ErrorView message={error} onRetry={loadData} />;
@@ -194,9 +196,9 @@ const Transactions = () => {
               onChange={(e) => handleFilterChange("category", e.target.value)}
             >
               <option value="">All Categories</option>
-              {categories.map((category) => (
-                <option key={category.Id} value={category.name}>
-                  {category.name}
+{categories.map((category) => (
+                <option key={category.Id} value={category.Name}>
+{category.Name}
                 </option>
               ))}
             </Select>

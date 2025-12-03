@@ -74,9 +74,9 @@ const Settings = () => {
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Category name must be at least 2 characters";
     } else {
-      // Check for duplicate names (excluding current category when editing)
+// Check for duplicate names (excluding current category when editing)
       const existingCategory = categories.find(cat => 
-        cat.name.toLowerCase() === formData.name.trim().toLowerCase() &&
+        cat.Name?.toLowerCase() === formData.name.trim().toLowerCase() &&
         cat.Id !== editingCategory?.Id
       );
       if (existingCategory) {
@@ -128,13 +128,13 @@ const Settings = () => {
     }
   };
 
-  const handleEdit = (category) => {
+const handleEdit = (category) => {
     setEditingCategory(category);
     setFormData({
-      name: category.name,
-      type: category.type,
-      color: category.color,
-      icon: category.icon
+      name: category.Name,
+      type: category.type_c,
+      color: category.color_c,
+      icon: category.icon_c
     });
     setShowForm(true);
   };
@@ -165,9 +165,8 @@ const Settings = () => {
     setFormErrors({});
   };
 
-  const expenseCategories = categories.filter(cat => cat.type === "expense");
-  const incomeCategories = categories.filter(cat => cat.type === "income");
-
+const expenseCategories = categories.filter(cat => cat.type_c === "expense");
+  const incomeCategories = categories.filter(cat => cat.type_c === "income");
   if (loading) return <Loading />;
   if (error) return <ErrorView message={error} onRetry={loadCategories} />;
 
@@ -238,16 +237,16 @@ const Settings = () => {
             {expenseCategories.map((category) => (
               <div key={category.Id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
                     <div 
                       className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
-                      style={{ backgroundColor: category.color }}
+                      style={{ backgroundColor: category.color_c }}
                     >
-                      <ApperIcon name={category.icon} size={20} />
+                      <ApperIcon name={category.icon_c} size={20} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">{category.name}</h4>
-                      <p className="text-sm text-gray-500 capitalize">{category.type}</p>
+                      <h4 className="font-medium text-gray-900">{category.Name}</h4>
+                      <p className="text-sm text-gray-500 capitalize">{category.type_c}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-1">
@@ -299,16 +298,16 @@ const Settings = () => {
             {incomeCategories.map((category) => (
               <div key={category.Id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
                     <div 
                       className="w-10 h-10 rounded-lg flex items-center justify-center text-white"
-                      style={{ backgroundColor: category.color }}
+                      style={{ backgroundColor: category.color_c }}
                     >
-                      <ApperIcon name={category.icon} size={20} />
+                      <ApperIcon name={category.icon_c} size={20} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">{category.name}</h4>
-                      <p className="text-sm text-gray-500 capitalize">{category.type}</p>
+                      <h4 className="font-medium text-gray-900">{category.Name}</h4>
+                      <p className="text-sm text-gray-500 capitalize">{category.type_c}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-1">

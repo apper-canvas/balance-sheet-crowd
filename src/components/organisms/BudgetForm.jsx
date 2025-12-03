@@ -27,20 +27,20 @@ loadCategories();
 
 
   useEffect(() => {
-    if (budget) {
+if (budget) {
       setFormData({
-        category: budget.category,
-        monthlyLimit: budget.monthlyLimit.toString(),
-        month: budget.month,
-        year: budget.year
+        category: budget.category_c?.Name || budget.category_c,
+        monthlyLimit: budget.monthly_limit_c?.toString() || "",
+        month: budget.month_c,
+        year: budget.year_c
       });
     }
   }, [budget]);
 
   const loadCategories = async () => {
     try {
-      const data = await categoryService.getAll();
-      setCategories(data.filter(cat => cat.type === "expense"));
+const data = await categoryService.getAll();
+      setCategories(data.filter(cat => cat.type_c === "expense"));
     } catch (error) {
       toast.error("Failed to load categories");
     }
@@ -77,8 +77,8 @@ loadCategories();
     try {
       const budgetData = {
         ...formData,
-        monthlyLimit: parseFloat(formData.monthlyLimit),
-        currentSpent: budget?.currentSpent || 0
+monthlyLimit: parseFloat(formData.monthlyLimit),
+        currentSpent: budget?.current_spent_c || 0
       };
 
       if (budget) {
@@ -115,9 +115,9 @@ loadCategories();
             onChange={(e) => handleInputChange("category", e.target.value)}
           >
             <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.Id} value={category.name}>
-                {category.name}
+{categories.map((category) => (
+              <option key={category.Id} value={category.Name}>
+                {category.Name}
               </option>
             ))}
           </Select>

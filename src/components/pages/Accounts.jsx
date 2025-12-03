@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { accountService } from "@/services/api/accountService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
-import Card from "@/components/atoms/Card";
-import AccountCard from "@/components/molecules/AccountCard";
-import AccountForm from "@/components/organisms/AccountForm";
 import Loading from "@/components/ui/Loading";
 import ErrorView from "@/components/ui/ErrorView";
 import Empty from "@/components/ui/Empty";
-import { accountService } from "@/services/api/accountService";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
+import AccountForm from "@/components/organisms/AccountForm";
+import AccountCard from "@/components/molecules/AccountCard";
 import { formatCurrency } from "@/utils/formatters";
 
 const Accounts = () => {
@@ -79,33 +79,34 @@ const Accounts = () => {
     });
   };
 
-  const filteredAccounts = accounts.filter(account => {
-    const matchesSearch = account.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         account.bank.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         account.accountNumber.toLowerCase().includes(filters.search.toLowerCase());
-    const matchesType = !filters.type || account.type === filters.type;
+const filteredAccounts = accounts.filter(account => {
+    const matchesSearch = account.Name?.toLowerCase().includes(filters.search.toLowerCase()) ||
+                         account.bank_c?.toLowerCase().includes(filters.search.toLowerCase()) ||
+                         account.account_number_c?.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesType = !filters.type || account.type_c === filters.type;
     const matchesStatus = filters.status === "all" || 
-                         (filters.status === "active" && account.isActive) ||
-                         (filters.status === "inactive" && !account.isActive);
+                         (filters.status === "active" && account.is_active_c) ||
+                         (filters.status === "inactive" && !account.is_active_c);
 
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const sortedAccounts = filteredAccounts.sort((a, b) => a.name.localeCompare(b.name));
+const sortedAccounts = filteredAccounts.sort((a, b) => a.Name?.localeCompare(b.Name) || 0);
 
   // Calculate summary statistics
   const totalBalance = accounts
-    .filter(account => account.type !== "credit")
-    .reduce((sum, account) => sum + account.balance, 0);
+    .filter(account => account.type_c !== "credit")
+    .reduce((sum, account) => sum + (account.balance_c || 0), 0);
 
   const totalDebt = accounts
-    .filter(account => account.type === "credit" && account.balance < 0)
-    .reduce((sum, account) => sum + Math.abs(account.balance), 0);
+    .filter(account => account.type_c === "credit" && (account.balance_c || 0) < 0)
+    .reduce((sum, account) => sum + Math.abs(account.balance_c || 0), 0);
 
   const netWorth = totalBalance - totalDebt;
 
   const accountsByType = accounts.reduce((acc, account) => {
-    acc[account.type] = (acc[account.type] || 0) + 1;
+    const type = account.type_c || 'unknown';
+    acc[type] = (acc[type] || 0) + 1;
     return acc;
   }, {});
 

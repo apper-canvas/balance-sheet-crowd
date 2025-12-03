@@ -19,12 +19,12 @@ const GoalForm = ({ goal, onSave, onCancel }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (goal) {
+if (goal) {
       setFormData({
-        name: goal.name,
-        targetAmount: goal.targetAmount.toString(),
-        currentAmount: goal.currentAmount.toString(),
-        targetDate: goal.targetDate ? format(new Date(goal.targetDate), "yyyy-MM-dd") : ""
+        name: goal.Name,
+        targetAmount: goal.target_amount_c?.toString() || "",
+        currentAmount: goal.current_amount_c?.toString() || "",
+        targetDate: goal.target_date_c ? format(new Date(goal.target_date_c), "yyyy-MM-dd") : ""
       });
     }
   }, [goal]);

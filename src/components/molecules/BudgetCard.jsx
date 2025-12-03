@@ -72,8 +72,8 @@ return (
             className={budget.status === "exceeded" ? "text-red-600" : "text-yellow-600"}
           />
           <span>
-            {budget.status === "exceeded" 
-              ? `Over budget by ${formatCurrency(budget.spent - budget.monthlyLimit)}`
+{budget.status === "exceeded" 
+              ? `Over budget by ${formatCurrency(budget.spent - budget.monthly_limit_c)}`
               : "Approaching budget limit"
             }
           </span>
@@ -90,10 +90,10 @@ return (
               ? "bg-yellow-100 text-yellow-600"
               : "bg-primary-100 text-primary-600"
           )}>
-            <ApperIcon name={getCategoryIcon(budget.category)} size={24} />
+<ApperIcon name={getCategoryIcon(budget.category_c?.Name || budget.category)} size={24} />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">{budget.category}</h3>
+<div>
+            <h3 className="text-lg font-semibold text-gray-900">{budget.category_c?.Name || budget.category}</h3>
             <Badge variant={getStatusColor(budget.status)}>
               {getStatusText(budget.status)}
             </Badge>
@@ -111,14 +111,14 @@ return (
       <div className="space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Spent</span>
-          <span className="font-semibold text-gray-900">
-            {formatCurrency(budget.spent)} of {formatCurrency(budget.monthlyLimit)}
+<span className="font-semibold text-gray-900">
+            {formatCurrency(budget.spent)} of {formatCurrency(budget.monthly_limit_c)}
           </span>
         </div>
         
         <ProgressBar 
-          value={budget.spent} 
-          max={budget.monthlyLimit}
+value={budget.spent} 
+          max={budget.monthly_limit_c}
           className="h-3"
         />
         

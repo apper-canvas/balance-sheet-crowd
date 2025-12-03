@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { accountService } from "@/services/api/accountService";
+import ApperIcon from "@/components/ApperIcon";
+import Select from "@/components/atoms/Select";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
 import Card from "@/components/atoms/Card";
 import FormField from "@/components/molecules/FormField";
-import ApperIcon from "@/components/ApperIcon";
-import { accountService } from "@/services/api/accountService";
 
 const AccountForm = ({ account, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -23,16 +23,16 @@ const AccountForm = ({ account, onSave, onCancel }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (account) {
+if (account) {
       setFormData({
-        name: account.name || "",
-        type: account.type || "checking",
-        accountNumber: account.accountNumber || "",
-        balance: account.balance?.toString() || "",
-        bank: account.bank || "",
-        description: account.description || "",
-        creditLimit: account.creditLimit?.toString() || "",
-        isActive: account.isActive ?? true
+        name: account.Name || "",
+        type: account.type_c || "checking",
+        accountNumber: account.account_number_c || "",
+        balance: account.balance_c?.toString() || "",
+        bank: account.bank_c || "",
+        description: account.description_c || "",
+        creditLimit: account.credit_limit_c?.toString() || "",
+        isActive: account.is_active_c ?? true
       });
     }
   }, [account]);
@@ -87,7 +87,7 @@ const AccountForm = ({ account, onSave, onCancel }) => {
       return;
     }
 
-    setLoading(true);
+setLoading(true);
     
     try {
       const accountData = {

@@ -418,8 +418,8 @@ const insights = getEnhancedInsights();
               </div>
               <div>
                 <p className="font-medium text-gray-900">Transaction Volume</p>
-                <p className="text-sm text-gray-600">
-                  {monthlyTotals.transactions.length} transactions this {reportType === "monthly" ? "month" : "year"}
+<p className="text-sm text-gray-600">
+                  {transactions.length} transactions this {reportType === "monthly" ? "month" : "year"}
                 </p>
               </div>
             </div>

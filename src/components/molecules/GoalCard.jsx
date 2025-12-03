@@ -35,8 +35,8 @@ const GoalCard = ({
           <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-lg shadow-lg">
             <ApperIcon name="Target" size={24} />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">{goal.name}</h3>
+<div>
+            <h3 className="text-lg font-semibold text-gray-900">{goal.Name}</h3>
             <Badge variant={getStatusColor(goal.status)}>
               {getStatusText(goal.status)}
             </Badge>
@@ -54,14 +54,14 @@ const GoalCard = ({
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">Progress</span>
-          <span className="font-semibold text-gray-900">
-            {formatCurrency(goal.currentAmount)} of {formatCurrency(goal.targetAmount)}
+<span className="font-semibold text-gray-900">
+            {formatCurrency(goal.current_amount_c)} of {formatCurrency(goal.target_amount_c)}
           </span>
         </div>
         
-        <ProgressBar 
-          value={goal.currentAmount} 
-          max={goal.targetAmount}
+<ProgressBar 
+          value={goal.current_amount_c} 
+          max={goal.target_amount_c}
           variant="success"
           className="h-3"
         />
@@ -75,10 +75,10 @@ const GoalCard = ({
           </span>
         </div>
         
-        {goal.targetDate && (
+{goal.target_date_c && (
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <ApperIcon name="Calendar" size={16} />
-            <span>Target: {formatDate(goal.targetDate)}</span>
+            <span>Target: {formatDate(goal.target_date_c)}</span>
           </div>
         )}
         

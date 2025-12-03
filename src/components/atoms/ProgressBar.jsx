@@ -1,46 +1,37 @@
-import { forwardRef } from "react";
 import { cn } from "@/utils/cn";
 
-const ProgressBar = forwardRef(({ 
-  className, 
+const ProgressBar = ({ 
   value = 0, 
-  max = 100,
-  variant = "default",
-  ...props 
-}, ref) => {
+  max = 100, 
+  variant = "default", 
+  className = "" 
+}) => {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
   
-  const baseClasses = "w-full bg-gray-200 rounded-full h-2 overflow-hidden";
-  
-  const variants = {
-    default: "bg-gradient-to-r from-primary-500 to-primary-400",
-    success: "bg-gradient-to-r from-green-500 to-green-400",
-    warning: "bg-gradient-to-r from-amber-500 to-amber-400",
-    danger: "bg-gradient-to-r from-red-500 to-red-400"
+  const getVariantClasses = (variant) => {
+    switch (variant) {
+      case "success":
+        return "bg-green-500";
+      case "warning":
+        return "bg-yellow-500";
+      case "error":
+        return "bg-red-500";
+      default:
+        return "bg-primary-500";
+    }
   };
-  
-  const getVariantByPercentage = (pct) => {
-    if (pct >= 100) return variants.danger;
-    if (pct >= 80) return variants.warning;
-    return variants.success;
-  };
-  
-  const progressVariant = variant === "default" ? getVariantByPercentage(percentage) : variants[variant];
-  
+
   return (
-    <div
-      className={cn(baseClasses, className)}
-      ref={ref}
-      {...props}
-    >
-      <div
-        className={cn("h-full transition-all duration-500 ease-out", progressVariant)}
+    <div className={cn("w-full bg-gray-200 rounded-full h-2", className)}>
+      <div 
+        className={cn(
+          "h-full rounded-full transition-all duration-300",
+          getVariantClasses(variant)
+        )}
         style={{ width: `${percentage}%` }}
       />
     </div>
   );
-});
-
-ProgressBar.displayName = "ProgressBar";
+};
 
 export default ProgressBar;

@@ -25,7 +25,7 @@ const Budgets = () => {
     : [];
 
   // Calculate totals
-  const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
+const totalBudget = budgets.reduce((sum, budget) => sum + (budget.monthly_limit_c || 0), 0);
   const totalSpent = budgetsWithProgress.reduce((sum, budget) => sum + budget.spent, 0);
   const overBudgetCount = budgetsWithProgress.filter(b => b.status === "exceeded").length;
   const warningBudgetCount = budgetsWithProgress.filter(b => b.status === "warning").length;

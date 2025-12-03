@@ -51,36 +51,36 @@ const TransactionItem = ({
     return colorMap[category] || "text-gray-600 bg-gray-100";
   };
   
-  return (
+return (
     <div className={cn(
       "flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100 hover:shadow-md transition-all duration-200",
       className
     )}>
       <div className="flex items-center space-x-4">
-        <div className={cn("p-2 rounded-lg", getCategoryColor(transaction.category))}>
-          <ApperIcon name={getCategoryIcon(transaction.category)} size={20} />
+        <div className={cn("p-2 rounded-lg", getCategoryColor(transaction.category_c?.Name || 'Other'))}>
+          <ApperIcon name={getCategoryIcon(transaction.category_c?.Name || 'Other')} size={20} />
         </div>
         <div className="flex-1">
           <div className="flex items-center space-x-2">
-            <p className="font-medium text-gray-900">{transaction.description}</p>
-            <Badge variant={transaction.type}>
-              {transaction.type}
+            <p className="font-medium text-gray-900">{transaction.description_c || transaction.Name}</p>
+            <Badge variant={transaction.type_c}>
+              {transaction.type_c}
             </Badge>
           </div>
           <div className="flex items-center space-x-2 mt-1">
-            <p className="text-sm text-gray-500">{transaction.category}</p>
+            <p className="text-sm text-gray-500">{transaction.category_c?.Name || 'Other'}</p>
             <span className="text-gray-300">•</span>
-            <p className="text-sm text-gray-500">{formatShortDate(transaction.date)}</p>
+            <p className="text-sm text-gray-500">{formatShortDate(transaction.date_c)}</p>
           </div>
         </div>
       </div>
       
       <div className="flex items-center space-x-3">
-        <p className={cn(
+<p className={cn(
           "text-lg font-semibold",
-          transaction.type === "income" ? "text-green-600" : "text-red-600"
+          transaction.type_c === "income" ? "text-green-600" : "text-red-600"
         )}>
-          {transaction.type === "income" ? "+" : "-"}{formatCurrency(transaction.amount)}
+          {transaction.type_c === "income" ? "+" : "-"}{formatCurrency(transaction.amount_c)}
         </p>
         
         {showActions && (

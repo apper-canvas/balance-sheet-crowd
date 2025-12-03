@@ -219,7 +219,7 @@ const Dashboard = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Transactions</span>
-                <span className="font-semibold text-gray-900">{monthlyTotals.transactions.length}</span>
+<span className="font-semibold text-gray-900">{transactions.length}</span>
               </div>
             </div>
           </div>
@@ -273,3 +273,6 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+<p className="text-sm text-gray-600">
+                  {transactions.length} transactions this month
+                </p>

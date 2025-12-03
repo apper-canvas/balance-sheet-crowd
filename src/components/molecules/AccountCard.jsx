@@ -42,24 +42,24 @@ const AccountCard = ({
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
-  return (
+return (
     <Card className={cn("p-6 card-hover", className)}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-primary-50 text-primary-600 rounded-lg">
-            <ApperIcon name={getAccountIcon(account.type)} size={24} />
+            <ApperIcon name={getAccountIcon(account.type_c)} size={24} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{account.name}</h3>
-            <p className="text-sm text-gray-600">{account.bank}</p>
-            <p className="text-sm text-gray-500">{account.accountNumber}</p>
+            <h3 className="text-lg font-semibold text-gray-900">{account.Name}</h3>
+            <p className="text-sm text-gray-600">{account.bank_c}</p>
+            <p className="text-sm text-gray-500">{account.account_number_c}</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <Badge className={getAccountTypeColor(account.type)}>
-            {formatAccountType(account.type)}
+          <Badge className={getAccountTypeColor(account.type_c)}>
+            {formatAccountType(account.type_c)}
           </Badge>
-          {!account.isActive && (
+          {!account.is_active_c && (
             <Badge variant="secondary">Inactive</Badge>
           )}
         </div>
@@ -68,25 +68,25 @@ const AccountCard = ({
       <div className="mb-4">
         <div className="flex items-baseline justify-between">
           <span className="text-sm font-medium text-gray-600">
-            {account.type === "credit" ? "Current Balance" : "Balance"}
+            {account.type_c === "credit" ? "Current Balance" : "Balance"}
           </span>
-          <span className={cn("text-2xl font-bold", getBalanceColor(account.balance, account.type))}>
-            {formatCurrency(account.balance)}
+          <span className={cn("text-2xl font-bold", getBalanceColor(account.balance_c, account.type_c))}>
+            {formatCurrency(account.balance_c)}
           </span>
         </div>
-        {account.type === "credit" && account.creditLimit && (
+        {account.type_c === "credit" && account.credit_limit_c && (
           <div className="mt-2">
             <div className="flex items-baseline justify-between text-sm">
               <span className="text-gray-600">Available Credit</span>
               <span className="font-medium text-gray-900">
-                {formatCurrency(account.creditLimit + account.balance)}
+                {formatCurrency(account.credit_limit_c + account.balance_c)}
               </span>
             </div>
             <div className="mt-1 bg-gray-200 rounded-full h-1.5">
               <div 
                 className="bg-primary-500 h-1.5 rounded-full transition-all duration-300"
                 style={{ 
-                  width: `${Math.max(0, Math.min(100, ((Math.abs(account.balance)) / account.creditLimit) * 100))}%` 
+                  width: `${Math.max(0, Math.min(100, ((Math.abs(account.balance_c)) / account.credit_limit_c) * 100))}%` 
                 }}
               />
             </div>
@@ -94,13 +94,13 @@ const AccountCard = ({
         )}
       </div>
 
-      {account.description && (
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{account.description}</p>
+      {account.description_c && (
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{account.description_c}</p>
       )}
 
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <span className="text-xs text-gray-500">
-          Created {new Date(account.createdAt).toLocaleDateString()}
+          Created {new Date(account.CreatedOn).toLocaleDateString()}
         </span>
         <div className="flex items-center space-x-2">
           <Button

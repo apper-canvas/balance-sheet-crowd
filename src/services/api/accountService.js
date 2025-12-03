@@ -1,59 +1,214 @@
-import accounts from "@/services/mockData/accounts.json";
+import { getApperClient } from "@/services/apperClient";
+import { toast } from "react-toastify";
 
 class AccountService {
   constructor() {
-    this.data = [...accounts];
+    this.tableName = 'account_c';
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.data];
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "account_number_c"}},
+          {"field": {"Name": "balance_c"}},
+          {"field": {"Name": "bank_c"}},
+          {"field": {"Name": "credit_limit_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "is_active_c"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.fetchRecords(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching accounts:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const account = this.data.find(item => item.Id === parseInt(id));
-    if (!account) {
-      throw new Error("Account not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "account_number_c"}},
+          {"field": {"Name": "balance_c"}},
+          {"field": {"Name": "bank_c"}},
+          {"field": {"Name": "credit_limit_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "is_active_c"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ]
+      };
+
+      const response = await apperClient.getRecordById(this.tableName, parseInt(id), params);
+
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching account ${id}:`, error?.response?.data?.message || error);
+      throw error;
     }
-    return { ...account };
   }
 
   async create(accountData) {
-    await this.delay();
-    const newId = Math.max(...this.data.map(item => item.Id), 0) + 1;
-    const newAccount = {
-      Id: newId,
-      ...accountData,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    };
-    this.data.push(newAccount);
-    return { ...newAccount };
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Name: accountData.name,
+          account_number_c: accountData.accountNumber,
+          balance_c: accountData.balance,
+          bank_c: accountData.bank,
+          credit_limit_c: accountData.creditLimit || null,
+          description_c: accountData.description || null,
+          is_active_c: accountData.isActive,
+          type_c: accountData.type
+        }]
+      };
+
+      const response = await apperClient.createRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} accounts:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error creating account:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 
   async update(id, updateData) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Account not found");
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
+
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.name,
+          account_number_c: updateData.accountNumber,
+          balance_c: updateData.balance,
+          bank_c: updateData.bank,
+          credit_limit_c: updateData.creditLimit || null,
+          description_c: updateData.description || null,
+          is_active_c: updateData.isActive,
+          type_c: updateData.type
+        }]
+      };
+
+      const response = await apperClient.updateRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} accounts:`, failed);
+          failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0 ? successful[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error updating account:", error?.response?.data?.message || error);
+      throw error;
     }
-    this.data[index] = { ...this.data[index], ...updateData };
-    return { ...this.data[index] };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Account not found");
-    }
-    const deletedAccount = this.data.splice(index, 1)[0];
-    return { ...deletedAccount };
-  }
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error("ApperClient not initialized");
+      }
 
-  delay() {
-    return new Promise(resolve => setTimeout(resolve, Math.random() * 300 + 200));
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord(this.tableName, params);
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} accounts:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+
+        return successful.length > 0;
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error?.response?.data?.message || error);
+      throw error;
+    }
   }
 }
 
