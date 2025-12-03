@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import SummaryCard from "@/components/molecules/SummaryCard";
-import TransactionItem from "@/components/molecules/TransactionItem";
-import ExpenseChart from "@/components/organisms/ExpenseChart";
-import SpendingTrendChart from "@/components/organisms/SpendingTrendChart";
-import TransactionForm from "@/components/organisms/TransactionForm";
-import Loading from "@/components/ui/Loading";
-import ErrorView from "@/components/ui/ErrorView";
-import Empty from "@/components/ui/Empty";
 import { transactionService } from "@/services/api/transactionService";
 import { budgetService } from "@/services/api/budgetService";
 import { savingsGoalService } from "@/services/api/savingsGoalService";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import ErrorView from "@/components/ui/ErrorView";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
+import TransactionForm from "@/components/organisms/TransactionForm";
+import ExpenseChart from "@/components/organisms/ExpenseChart";
+import SpendingTrendChart from "@/components/organisms/SpendingTrendChart";
+import Transactions from "@/components/pages/Transactions";
+import Goals from "@/components/pages/Goals";
+import Reports from "@/components/pages/Reports";
+import Budgets from "@/components/pages/Budgets";
+import TransactionItem from "@/components/molecules/TransactionItem";
+import SummaryCard from "@/components/molecules/SummaryCard";
 import { 
   calculateMonthlyTotals, 
   calculateCategoryBreakdown, 
@@ -273,6 +277,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-<p className="text-sm text-gray-600">
-                  {transactions.length} transactions this month
                 </p>
