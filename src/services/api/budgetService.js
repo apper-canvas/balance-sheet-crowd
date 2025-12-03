@@ -72,21 +72,27 @@ class BudgetService {
     }
   }
 
-  async create(budgetData) {
+async create(budgetData) {
     try {
       const apperClient = getApperClient();
       if (!apperClient) {
         throw new Error("ApperClient not initialized");
       }
 
+      // Ensure category_c is an integer ID
+      const categoryId = parseInt(budgetData.category?.Id || budgetData.category);
+      if (!categoryId || isNaN(categoryId)) {
+        throw new Error("Valid category ID is required");
+      }
+
       const params = {
         records: [{
-          Name: `${budgetData.category} Budget`,
-          category_c: budgetData.category?.Id || budgetData.category,
+          Name: `Budget ${budgetData.month} ${budgetData.year}`,
+          category_c: categoryId,
           current_spent_c: budgetData.currentSpent || 0,
           month_c: budgetData.month,
-          monthly_limit_c: budgetData.monthlyLimit,
-          year_c: budgetData.year
+          monthly_limit_c: parseFloat(budgetData.monthlyLimit),
+          year_c: parseInt(budgetData.year)
         }]
       };
 
@@ -126,14 +132,14 @@ class BudgetService {
       }
 
       const params = {
-        records: [{
+records: [{
           Id: parseInt(id),
-          Name: `${updateData.category} Budget`,
-          category_c: updateData.category?.Id || updateData.category,
+          Name: `Budget ${updateData.month} ${updateData.year}`,
+          category_c: parseInt(updateData.category?.Id || updateData.category),
           current_spent_c: updateData.currentSpent || 0,
           month_c: updateData.month,
-          monthly_limit_c: updateData.monthlyLimit,
-          year_c: updateData.year
+          monthly_limit_c: parseFloat(updateData.monthlyLimit),
+          year_c: parseInt(updateData.year)
         }]
       };
 

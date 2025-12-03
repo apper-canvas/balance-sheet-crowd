@@ -26,10 +26,10 @@ loadCategories();
   }, []);
 
 
-  useEffect(() => {
-if (budget) {
+useEffect(() => {
+    if (budget) {
       setFormData({
-        category: budget.category_c?.Name || budget.category_c,
+        category: budget.category_c?.Id || budget.category_c,
         monthlyLimit: budget.monthly_limit_c?.toString() || "",
         month: budget.month_c,
         year: budget.year_c
@@ -110,13 +110,13 @@ monthlyLimit: parseFloat(formData.monthlyLimit),
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Category" required error={errors.category}>
-          <Select
+<Select
             value={formData.category}
-            onChange={(e) => handleInputChange("category", e.target.value)}
+            onChange={(e) => handleInputChange("category", parseInt(e.target.value))}
           >
             <option value="">Select a category</option>
-{categories.map((category) => (
-              <option key={category.Id} value={category.Name}>
+            {categories.map((category) => (
+              <option key={category.Id} value={category.Id}>
                 {category.Name}
               </option>
             ))}
